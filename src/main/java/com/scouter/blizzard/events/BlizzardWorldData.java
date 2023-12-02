@@ -25,6 +25,7 @@ public class BlizzardWorldData extends SavedData {
 
     public void setBlizzardData(ChunkPos pos, BlizzardData data) {
         blizzardData.put(pos, data);
+        BMessages.sendMSGToAll(new BlizzardS2C(pos, data));
         setDirty();
     }
 
