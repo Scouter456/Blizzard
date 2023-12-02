@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.scouter.blizzard.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "revenantrites.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "BlizzardMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
