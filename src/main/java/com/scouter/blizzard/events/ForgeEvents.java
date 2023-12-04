@@ -20,8 +20,8 @@ public class ForgeEvents {
     public static void createBlizzard(TickEvent.PlayerTickEvent event) {
         ChunkPos chunkPos = event.player.chunkPosition();
         BlizzardData clientData = BlizzardClientData.getBlizzardClientData(chunkPos);
-        LOGGER.info("data " + clientData.getBlizzardStrength());
-        LOGGER.info("data2 " + clientData.isHasBlizzard());
+       //LOGGER.info("data " + clientData.getBlizzardStrength());
+       //LOGGER.info("data2 " + clientData.isHasBlizzard());
         if (!(event.player instanceof ServerPlayer serverPlayer) || event.phase == TickEvent.Phase.END) return;
 
         if(!serverPlayer.level().isClientSide){

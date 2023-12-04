@@ -11,6 +11,7 @@ import com.scouter.blizzard.events.BlizzardData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
@@ -30,6 +31,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
 
+import java.util.Random;
+
 import static net.minecraft.client.renderer.LevelRenderer.getLightColor;
 
 @Mixin(LevelRenderer.class)
@@ -39,38 +42,41 @@ public class BlizzardMixin {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     //TODO also fix the blizzard showing one way
+    // [VanillaCopy] inside of LevelRenderer.renderRainSnow, edits noted
     @Inject(method = "renderSnowAndRain", at = @At(value = "TAIL"))
     public void renderSnowAndRain(LightTexture pLightTexture, float pPartialTick, double pCamX, double pCamY, double pCamZ, CallbackInfo ci) {
-        int x = (int) pCamX >> 4;
-        int z = (int) pCamZ >> 4;
-        int renderDistance = Minecraft.getInstance().options.renderDistance().get();
-        int i1 = -1;
-        for(int chunkX = -renderDistance; chunkX < renderDistance; chunkX++) {
-            for (int chunkZ = -renderDistance; chunkZ < renderDistance; chunkZ++) {
-                int cx = x + chunkX;
-                int cz = z + chunkZ;
+        //Render Blizzard if close
+        if(isNearBlizzard(pCamX, pCamZ)) {
+                pLightTexture.turnOnLightLayer();
+                int l = 10;
+                if (Minecraft.useFancyGraphics()) {
+                    l = 20;
+                }
+                Tesselator tesselator = Tesselator.getInstance();
+                BufferBuilder bufferbuilder = tesselator.getBuilder();
+                RenderSystem.disableCull();
+                RenderSystem.enableBlend();
+                RenderSystem.enableDepthTest();
+                int i1 = -1;
+                double d0 = (double) 1 * 0.5D;
+                double d1 = (double) 1 * 0.5D;
+                LevelRenderer levelRenderer = (LevelRenderer) (Object) this;
+                Level level = Minecraft.getInstance().level;
+                float f1 = (float) levelRenderer.getTicks() + pPartialTick;
+                int i = Mth.floor(pCamX);
+                int j = Mth.floor(pCamY);
+                int k = Mth.floor(pCamZ);
+                int f = 1;
+                RenderSystem.depthMask(Minecraft.useShaderTransparency());
+                RenderSystem.setShader(GameRenderer::getParticleShader);
+                BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+                for (int j1 = k - l; j1 <= k + l; ++j1) {
+                    for (int k1 = i - l; k1 <= i + l; ++k1) {
 
-                ChunkPos chunkPos = new ChunkPos(cx, cz);
-                BlizzardData data = BlizzardClientData.getBlizzardClientData(chunkPos);
-                if (data.isHasBlizzard()) {
-                    int l = 5;
-                    if (Minecraft.useFancyGraphics()) {
-                        l = 10;
-                    }
-                    Tesselator tesselator = Tesselator.getInstance();
-                    BufferBuilder bufferbuilder = tesselator.getBuilder();
-                    double d0 = (double) data.getBlizzardStrength() * 0.5D;
-                    double d1 = (double) data.getBlizzardStrength() * 0.5D;
-                    LevelRenderer levelRenderer = (LevelRenderer) (Object) this;
-                    Level level = Minecraft.getInstance().level;
-                    float f1 = (float) levelRenderer.getTicks() + pPartialTick;
-                    int i = Mth.floor(pCamX);
-                    int j = Mth.floor(pCamY);
-                    int k = Mth.floor(pCamZ);
-                    int f = data.getBlizzardStrength();
-                    BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
-                    for (int j1 = k - l; j1 <= k + l; ++j1) {
-                        for (int k1 = i - l; k1 <= i + l; ++k1) {
+                        //Replace biome check with chunk check
+                        ChunkPos chunkPos = new ChunkPos(k1 >>4, j1 >> 4);
+                        BlizzardData data = BlizzardClientData.getBlizzardClientData(chunkPos);
+                        if (data.isHasBlizzard()) {
                             int i2 = level.getHeight(Heightmap.Types.MOTION_BLOCKING, k1, j1);
                             int j2 = j - l;
                             int k2 = j + l;
@@ -87,13 +93,13 @@ public class BlizzardMixin {
                                 l2 = j;
                             }
 
-
-                            if (i1 != 1) {
+                            //Only use single texture
+                            if (i1 != 0) {
                                 if (i1 >= 0) {
                                     tesselator.end();
                                 }
 
-                                i1 = 1;
+                                i1 = 0;
                                 RenderSystem.setShaderTexture(0, SNOW_LOCATION);
                                 bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
                             }
@@ -118,16 +124,31 @@ public class BlizzardMixin {
                             bufferbuilder.vertex((double) k1 - pCamX - d0 + 0.5D, (double) j2 - pCamY, (double) j1 - pCamZ - d1 + 0.5D).uv(0.0F + f6, (float) k2 * 0.25F + f5 + f7).color(1.0F, 1.0F, 1.0F, f9).uv2(k4, j4).endVertex();
                         }
                     }
-
-                    if (i1 >= 0) {
-                        tesselator.end();
-                    }
-
-                    RenderSystem.enableCull();
-                    RenderSystem.disableBlend();
-                    pLightTexture.turnOffLightLayer();
                 }
+
+                if (i1 == 0) {
+                    tesselator.end();
+                }
+
+                RenderSystem.enableCull();
+                RenderSystem.disableBlend();
+                pLightTexture.turnOffLightLayer();
+        }
+    }
+
+
+    private static boolean isNearBlizzard(double xIn, double zIn) {
+        final int range = 5;
+        int x = (int) xIn >> 4;
+        int z = (int) zIn >> 4;
+        boolean nearBlizzard = false;
+        for(int chunkX = -range; (chunkX < range) && !nearBlizzard ; chunkX++) {
+            for (int chunkZ = -range; (chunkZ < range) && !nearBlizzard; chunkZ++) {
+                ChunkPos chunkPos = new ChunkPos(x + chunkX, z + chunkZ);
+                BlizzardData data = BlizzardClientData.getBlizzardClientData(chunkPos);
+                nearBlizzard = data.isHasBlizzard();
             }
         }
+        return nearBlizzard;
     }
 }
