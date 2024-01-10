@@ -2,7 +2,7 @@ package com.scouter.blizzard;
 
 import com.mojang.logging.LogUtils;
 import com.scouter.blizzard.codec.QuestRegistries;
-import com.scouter.blizzard.codec.QuestTypes;
+import com.scouter.blizzard.codec.Quest;
 import com.scouter.blizzard.events.ClientEvents;
 import com.scouter.blizzard.events.ForgeEvents;
 import com.scouter.blizzard.setup.ClientSetup;
@@ -11,15 +11,12 @@ import com.scouter.blizzard.setup.Registration;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.StructureModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DataPackRegistryEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 import software.bernie.geckolib.GeckoLib;
 
@@ -48,7 +45,7 @@ public class Blizzard
         }
         MinecraftForge.EVENT_BUS.register(ForgeEvents.class);
         modbus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
-            event.dataPackRegistry(QuestRegistries.Keys.QUEST_TYPE, QuestTypes.DIRECT_CODEC);
+            event.dataPackRegistry(QuestRegistries.Keys.QUEST_TYPE, Quest.DIRECT_CODEC);
         });
 
         GeckoLib.initialize();
