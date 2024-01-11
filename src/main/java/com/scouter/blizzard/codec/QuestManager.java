@@ -28,7 +28,7 @@ import static com.scouter.blizzard.Blizzard.prefix;
 public class QuestManager extends SimpleJsonResourceReloadListener {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson STANDARD_GSON = new Gson();
-    protected static Map<ResourceLocation, Quest> data = new HashMap<>();
+    protected static Map<ResourceLocation, Quests> data = new HashMap<>();
     private final String folderName;
     public QuestManager()
     {
@@ -42,21 +42,23 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
         this.folderName = folderName;
     }
 
-
+    public static Map<ResourceLocation, Quests> getQuests() {
+        return data;
+    }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> jsons, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-        Map<ResourceLocation, Quest> questMap = new HashMap<>();
+        Map<ResourceLocation, Quests> questMap = new HashMap<>();
 
         for (Map.Entry<ResourceLocation, JsonElement> entry : jsons.entrySet()) {
             ResourceLocation key = entry.getKey();
             JsonElement element = entry.getValue();
 
             // if we fail to parse json, log an error and continue
-            Quest.DIRECT_CODEC.decode(JsonOps.INSTANCE, element)
+            Quests.CODEC.decode(JsonOps.INSTANCE, element)
                     .get()
                     .ifLeft(result -> {
-                        Quest quest = result.getFirst();
+                        Quests quest = result.getFirst();
                         questMap.put(key, quest);
                     })
                     .ifRight(partial -> LOGGER.error("Failed to parse data json for {} due to: {}", key, partial.message()));

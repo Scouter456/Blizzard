@@ -1,5 +1,8 @@
 {
-  "type": "blizzard:kill",
-  "entity_to_kill": "minecraft:blaze",
-  "killer": "minecraft:player"
+  "quest_name": "Kill Blaze",
+  "quests": [{
+    "type": "blizzard:kill",
+    "entity_to_kill": "minecraft:blaze",
+    "killer": "minecraft:player"
+  }]
 }
