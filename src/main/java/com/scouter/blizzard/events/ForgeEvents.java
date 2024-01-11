@@ -7,18 +7,21 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = Blizzard.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -61,16 +64,34 @@ public class ForgeEvents {
             PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level);
             Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
             for(Quests questsI : questsSet) {
-                List<Quest> questList = questsI.getQuests();
-                for(Quest quest : questList) {
+                List<Task> questList = questsI.getTasks();
+                for(Task quest : questList) {
                     quest.playerKillEntity(event.getEntity(), player, level);
                 }
             }
             playerQuestManager.setDirty();
         }
-
-
     }
+
+    @SubscribeEvent
+    public static void killQuest(BlockEvent.BreakEvent event) {
+        Player player = event.getPlayer();
+        if(player != null && !player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            BlockState state = event.getState();
+            ServerLevel level = (ServerLevel) player.level();
+            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level);
+            Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
+            for(Quests questsI : questsSet) {
+                List<Task> questList = questsI.getTasks();
+                for(Task quest : questList) {
+                    quest.playerMineBlock(state, player, level);
+                }
+            }
+            playerQuestManager.setDirty();
+        }
+    }
+
+
 
     @SubscribeEvent
     public static void onRegisterReloadListeners(AddReloadListenerEvent event){

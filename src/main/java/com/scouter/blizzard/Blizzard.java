@@ -1,8 +1,9 @@
 package com.scouter.blizzard;
 
 import com.mojang.logging.LogUtils;
-import com.scouter.blizzard.codec.QuestRegistries;
-import com.scouter.blizzard.codec.Quest;
+import com.scouter.blizzard.codec.QuestCommand;
+import com.scouter.blizzard.codec.TaskRegistries;
+import com.scouter.blizzard.codec.Task;
 import com.scouter.blizzard.events.ClientEvents;
 import com.scouter.blizzard.events.ForgeEvents;
 import com.scouter.blizzard.setup.ClientSetup;
@@ -11,6 +12,7 @@ import com.scouter.blizzard.setup.Registration;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -44,11 +46,16 @@ public class Blizzard
             // static method with no client-only classes in method signature
         }
         MinecraftForge.EVENT_BUS.register(ForgeEvents.class);
+        MinecraftForge.EVENT_BUS.addListener(this::commands);
         modbus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
-            event.dataPackRegistry(QuestRegistries.Keys.QUEST_TYPE, Quest.DIRECT_CODEC);
+            event.dataPackRegistry(TaskRegistries.Keys.TASK_TYPE, Task.DIRECT_CODEC);
         });
 
         GeckoLib.initialize();
+    }
+
+    public void commands(RegisterCommandsEvent e) {
+        QuestCommand.register(e.getDispatcher());
     }
 
     public static ResourceLocation prefix(String name) {

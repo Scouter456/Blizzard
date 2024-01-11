@@ -1,0 +1,17 @@
+{
+  "quest_name": "Mine Quest",
+  "tasks": [
+    {
+      "type": "blizzard:mine",
+      "to_mine": "minecraft:stone",
+      "amount": 1,
+      "identifier": "blizzard:mine_quest_task_1"
+    },
+    {
+      "type": "blizzard:kill",
+      "entity_to_kill": "minecraft:blaze",
+      "killer": "minecraft:player",
+      "identifier": "blizzard:kill_quest_task_1"
+    }
+  ]
+}

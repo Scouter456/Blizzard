@@ -61,8 +61,7 @@ public class PlayerQuestManager extends SavedData {
             Set<Quests> questsSet = new HashSet<>();
             for(int j = 0; j < quests.size(); j++) {
                 CompoundTag questEntry = quests.getCompound(j);
-                //Todo dont forget the data thats saved in the instance!
-                Quests.CODEC.decode(NbtOps.INSTANCE, questEntry)
+                Quests.SERIALIZER_CODEC.decode(NbtOps.INSTANCE, questEntry)
                         .get()
                         .ifLeft(result -> {
                             Quests questRes = result.getFirst();
@@ -70,15 +69,6 @@ public class PlayerQuestManager extends SavedData {
                         })
                         .ifRight(partial -> LOGGER.error("Failed to load saveData for player with UUID {} due to: {}", playerUUID, partial.message()));
             }
-
-            ListTag questTag = entry.getList("questDataAll", Tag.TAG_COMPOUND);
-            for (int l = 0; l < questTag.size(); l++) {
-                CompoundTag tag = questTag.getCompound(l);
-                if (i < questsSet.size()) {
-                    questsSet.stream().toList().get(i).setData(tag);
-                }
-            }
-
             playerQuests.put(playerUUID, questsSet);
         }
     }
@@ -92,13 +82,8 @@ public class PlayerQuestManager extends SavedData {
             questEntry.putUUID("playerUUID", entry.getKey());
             Set<Quests> questsSet = entry.getValue();
             ListTag questsTag = new ListTag();
-            ListTag questData = new ListTag();
             for(Quests  quests : questsSet) {
-                //Todo dont forget the data thats saved in the instance!!
-
-                CompoundTag data = quests.serializeData();
-                questData.add(data);
-                DataResult<Tag> compoundTag = Quests.CODEC.encodeStart(NbtOps.INSTANCE, quests);
+                DataResult<Tag> compoundTag = Quests.SERIALIZER_CODEC.encodeStart(NbtOps.INSTANCE, quests);
                 compoundTag.get()
                         .ifLeft(result -> {
                             questsTag.add(result.copy());
@@ -106,7 +91,6 @@ public class PlayerQuestManager extends SavedData {
                         .ifRight(partial -> LOGGER.error("Failed to save quest {} for player with UUID {}", entry.getKey(), quests));
             }
             questEntry.put("quests", questsTag);
-            questEntry.put("questDataAll", questData);
             questList.add(questEntry);
         }
         nbt.put("playerQuests", questList);
