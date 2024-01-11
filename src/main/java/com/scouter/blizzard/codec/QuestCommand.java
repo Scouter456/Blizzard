@@ -32,12 +32,12 @@ public class QuestCommand {
     };
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("give_quest").requires(s -> s.hasPermission(2));
+        LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("quest").requires(s -> s.hasPermission(2));
 
 
-        builder.then(Commands.argument("target", EntityArgument.player()).then(Commands.argument("type", ResourceLocationArgument.id()).suggests(SUGGEST_TYPE).executes(c -> {
+        builder.then(Commands.literal("give").then(Commands.argument("target", EntityArgument.player()).then(Commands.argument("type", ResourceLocationArgument.id()).suggests(SUGGEST_TYPE).executes(c -> {
             return giveQuest(c, EntityArgument.getPlayer(c, "target"), ResourceLocationArgument.getId(c, "type"));
-        })));
+        }))));
 
 
         pDispatcher.register(builder);
