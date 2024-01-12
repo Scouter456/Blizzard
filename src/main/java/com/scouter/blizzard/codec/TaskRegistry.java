@@ -51,4 +51,55 @@ public class TaskRegistry {
                     Codec.INT.fieldOf("mined").forGetter(s -> s.mined)
             ).apply(builder, MineTask::new))
     );
+
+    public static final RegistryObject<Codec<BrewPotionTask>> BREW_TASK = TASK_TYPE_SERIALIZER.register("brewing", () ->
+            RecordCodecBuilder.create(builder -> builder.group(
+                    BuiltInRegistries.ITEM.byNameCodec().fieldOf("to_brew").forGetter(s -> s.potion),
+                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toBrew),
+                    ResourceLocation.CODEC.fieldOf("identifier").forGetter(s -> s.id)
+            ).apply(builder, BrewPotionTask::new))
+    );
+
+    public static final RegistryObject<Codec<BrewPotionTask>> BREW_TASK_SERIALIZER = TASK_TYPE_SERIALIZER.register("brewing_serializer", () ->
+            RecordCodecBuilder.create(builder -> builder.group(
+                    BuiltInRegistries.ITEM.byNameCodec().fieldOf("to_brew").forGetter(s -> s.potion),
+                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toBrew),
+                    ResourceLocation.CODEC.fieldOf("identifier").forGetter(s -> s.id),
+                    Codec.INT.fieldOf("brewed").forGetter(s -> s.brewed)
+                    ).apply(builder, BrewPotionTask::new))
+    );
+
+    public static final RegistryObject<Codec<CollectItemTask>> COLLECT_TASK = TASK_TYPE_SERIALIZER.register("collect", () ->
+            RecordCodecBuilder.create(builder -> builder.group(
+                    BuiltInRegistries.ITEM.byNameCodec().fieldOf("to_collect").forGetter(s -> s.item),
+                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toCollect),
+                    ResourceLocation.CODEC.fieldOf("identifier").forGetter(s -> s.id)
+            ).apply(builder, CollectItemTask::new))
+    );
+
+    public static final RegistryObject<Codec<CollectItemTask>> COLLECT_TASK_SERIALIZER = TASK_TYPE_SERIALIZER.register("collect_serializer", () ->
+            RecordCodecBuilder.create(builder -> builder.group(
+                    BuiltInRegistries.ITEM.byNameCodec().fieldOf("to_collect").forGetter(s -> s.item),
+                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toCollect),
+                    ResourceLocation.CODEC.fieldOf("identifier").forGetter(s -> s.id),
+                    Codec.INT.fieldOf("collected").forGetter(s -> s.collected)
+            ).apply(builder, CollectItemTask::new))
+    );
+
+    public static final RegistryObject<Codec<FindStructureTask>> FIND_STRUCTURE_TASK = TASK_TYPE_SERIALIZER.register("find_structure", () ->
+            RecordCodecBuilder.create(builder -> builder.group(
+                    ResourceLocation.CODEC.fieldOf("to_find").forGetter(s -> s.structure),
+                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toFind),
+                    ResourceLocation.CODEC.fieldOf("identifier").forGetter(s -> s.id)
+            ).apply(builder, FindStructureTask::new))
+    );
+
+    public static final RegistryObject<Codec<FindStructureTask>> FIND_STRUCTURE_TASK_SERIALIZER = TASK_TYPE_SERIALIZER.register("find_structure_serializer", () ->
+            RecordCodecBuilder.create(builder -> builder.group(
+                    ResourceLocation.CODEC.fieldOf("to_find").forGetter(s -> s.structure),
+                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toFind),
+                    ResourceLocation.CODEC.fieldOf("identifier").forGetter(s -> s.id),
+                    Codec.INT.fieldOf("found").forGetter(s -> s.found)
+            ).apply(builder, FindStructureTask::new))
+    );
 }

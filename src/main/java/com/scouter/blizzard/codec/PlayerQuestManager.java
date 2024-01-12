@@ -23,14 +23,14 @@ public class PlayerQuestManager extends SavedData {
     private Map<UUID, Set<Quests>> playerQuests = new ConcurrentHashMap<>();
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static PlayerQuestManager get(Level level){
+    public static PlayerQuestManager get(Level level, UUID uuid){
         if (level.isClientSide) {
             throw new RuntimeException("Don't access this client-side!");
         }
         // Get the vanilla storage manager from the level
         DimensionDataStorage storage = ((ServerLevel)level).getDataStorage();
         // Get the PlayerQuests if it already exists. Otherwise, create a new one.
-        return storage.computeIfAbsent(PlayerQuestManager::new, PlayerQuestManager::new, "playerquests");
+        return storage.computeIfAbsent(PlayerQuestManager::new, PlayerQuestManager::new, uuid.toString());
     }
 
     public Set<Quests> getQuestsForUUID(UUID uuid) {

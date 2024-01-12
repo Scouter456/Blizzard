@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class KillTask implements Task {
@@ -42,6 +43,11 @@ public class KillTask implements Task {
             killedEnties++;
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean playerObtainItem(ItemStack stack, Player brewer, ServerLevel serverLevel) {
         return false;
     }
 

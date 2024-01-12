@@ -1,0 +1,11 @@
+{
+  "quest_name": "Kill Player",
+  "tasks": [
+    {
+    "type": "blizzard:kill",
+    "entity_to_kill": "minecraft:player",
+    "killer": "minecraft:player",
+    "identifier": "blizzard:kill_quest_task_1"
+  }
+  ]
+}

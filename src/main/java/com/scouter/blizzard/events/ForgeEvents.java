@@ -8,12 +8,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.brewing.PlayerBrewedPotionEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,7 +30,7 @@ import java.util.stream.Collectors;
 @Mod.EventBusSubscriber(modid = Blizzard.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
-
+    private static int counter;
     @SubscribeEvent
     public static void createBlizzard(TickEvent.PlayerTickEvent event) {
         ChunkPos chunkPos = event.player.chunkPosition();
@@ -36,7 +39,7 @@ public class ForgeEvents {
        //LOGGER.info("data2 " + clientData.isHasBlizzard());
         if (!(event.player instanceof ServerPlayer serverPlayer) || event.phase == TickEvent.Phase.END) return;
 
-        if(!serverPlayer.level().isClientSide){
+        if(!serverPlayer.level().isClientSide && counter++ % 40 == 0){
             if(serverPlayer.getItemInHand(InteractionHand.MAIN_HAND).is(Items.DIAMOND_BLOCK)) {
                 BlizzardWorldData blizzardWorldData = BlizzardWorldData.get((ServerLevel) serverPlayer.level());
                 chunkPos = serverPlayer.chunkPosition();
@@ -44,14 +47,15 @@ public class ForgeEvents {
                 blizzardWorldData.setBlizzardData(chunkPos, blizzardData);
             }
             ServerLevel serverLevel = (ServerLevel) serverPlayer.level();
-            PlayerQuestManager playerQuests = PlayerQuestManager.get(serverLevel);
-            if(!QuestManager.getQuests().isEmpty() && serverPlayer.getItemInHand(InteractionHand.MAIN_HAND).is(Items.PAPER)) {
-                playerQuests.addQuestToUUID(serverPlayer.getUUID(), QuestManager.getQuests().values().stream().collect(Collectors.toList()).get(0));
+            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(serverLevel, serverPlayer.getUUID());
+            Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(serverPlayer.getUUID());
+            for(Quests questsI : questsSet) {
+                List<Task> questList = questsI.getTasks();
+                for(Task quest : questList) {
+                    quest.playerFindStructure(serverPlayer, serverLevel);
+                }
             }
-            Set<Quests> quests = playerQuests.getQuestsForUUID(serverPlayer.getUUID());
-            for(Quests quests1 : quests) {
-                LOGGER.info("Quest: " + quests1.getQuestName());
-            }
+            playerQuestManager.setDirty();
         }
 
     }
@@ -61,7 +65,7 @@ public class ForgeEvents {
         Entity source  = event.getSource().getEntity();
         if(source != null && !source.level().isClientSide() && source instanceof ServerPlayer player) {
             ServerLevel level = (ServerLevel) player.level();
-            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level);
+            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level, player.getUUID());
             Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
             for(Quests questsI : questsSet) {
                 List<Task> questList = questsI.getTasks();
@@ -79,7 +83,7 @@ public class ForgeEvents {
         if(player != null && !player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
             BlockState state = event.getState();
             ServerLevel level = (ServerLevel) player.level();
-            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level);
+            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level, serverPlayer.getUUID());
             Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
             for(Quests questsI : questsSet) {
                 List<Task> questList = questsI.getTasks();
@@ -91,7 +95,41 @@ public class ForgeEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void collectItemTask(PlayerEvent.ItemPickupEvent event) {
+        Player player = event.getEntity();
+        if(player != null && !player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            ItemStack stack = event.getStack();
+            ServerLevel level = (ServerLevel) player.level();
+            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level, serverPlayer.getUUID());
+            Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
+            for(Quests questsI : questsSet) {
+                List<Task> questList = questsI.getTasks();
+                for(Task quest : questList) {
+                    quest.playerObtainItem(stack, player, level);
+                }
+            }
+            playerQuestManager.setDirty();
+        }
+    }
 
+    @SubscribeEvent
+    public static void brewPotionTask(PlayerBrewedPotionEvent event) {
+        Player player = event.getEntity();
+        if(player != null && !player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            ItemStack stack = event.getStack();
+            ServerLevel level = (ServerLevel) player.level();
+            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level, serverPlayer.getUUID());
+            Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
+            for(Quests questsI : questsSet) {
+                List<Task> questList = questsI.getTasks();
+                for(Task quest : questList) {
+                    quest.playerObtainItem(stack, player, level);
+                }
+            }
+            playerQuestManager.setDirty();
+        }
+    }
 
     @SubscribeEvent
     public static void onRegisterReloadListeners(AddReloadListenerEvent event){

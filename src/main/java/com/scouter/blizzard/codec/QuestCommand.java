@@ -46,7 +46,7 @@ public class QuestCommand {
     public static int giveQuest(CommandContext<CommandSourceStack> c, ServerPlayer player, ResourceLocation type) {
         try {
             ServerLevel level = c.getSource().getLevel();
-            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level);
+            PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level, player.getUUID());
             Quests quests = QuestManager.getQuests().get(type);
             if(quests != null) {
                 playerQuestManager.addQuestToUUID(player.getUUID(), quests);

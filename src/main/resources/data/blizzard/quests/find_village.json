@@ -1,0 +1,11 @@
+{
+  "quest_name": "Find Village",
+  "tasks": [
+    {
+      "type": "blizzard:find_structure",
+      "to_find": "minecraft:village_plains",
+      "amount": 1,
+      "identifier": "minecraft:task_identifier"
+    }
+  ]
+}
