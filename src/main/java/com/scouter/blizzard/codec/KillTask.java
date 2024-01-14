@@ -1,6 +1,7 @@
 package com.scouter.blizzard.codec;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -42,7 +43,6 @@ public class KillTask implements Task {
         if (killed.getType() == entityT.getType()) {
             killedEnties++;
         }
-
         return false;
     }
 

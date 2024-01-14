@@ -39,7 +39,7 @@ public class BrewPotionTask implements Task{
     }
 
     @Override
-    public boolean playerObtainItem(ItemStack stack, Player brewer, ServerLevel serverLevel) {
+    public boolean playerBrewPotion(ItemStack stack, Player brewer, ServerLevel serverLevel) {
         if(stack.is(potion)) {
             brewed++;
         }

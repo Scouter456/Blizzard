@@ -35,21 +35,21 @@ public class TaskRegistry {
             ).apply(builder, KillTask::new))
     );
 
-    public static final RegistryObject<Codec<MineTask>> MINE_TASK = TASK_TYPE_SERIALIZER.register("mine", () ->
+    public static final RegistryObject<Codec<BreakTask>> BREAK_TASK = TASK_TYPE_SERIALIZER.register("break", () ->
             RecordCodecBuilder.create(builder -> builder.group(
-                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("to_mine").forGetter(s -> s.block),
-                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toMine),
+                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("to_break").forGetter(s -> s.block),
+                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toBreak),
                     ResourceLocation.CODEC.fieldOf("identifier").forGetter(s -> s.id)
-            ).apply(builder, MineTask::new))
+            ).apply(builder, BreakTask::new))
     );
 
-    public static final RegistryObject<Codec<MineTask>> MINE_TASK_SERIALIZER = TASK_TYPE_SERIALIZER.register("mine_serializer", () ->
+    public static final RegistryObject<Codec<BreakTask>> BREAK_TASK_SERIALIZER = TASK_TYPE_SERIALIZER.register("break_serializer", () ->
             RecordCodecBuilder.create(builder -> builder.group(
-                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("to_mine").forGetter(s -> s.block),
-                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toMine),
+                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("to_break").forGetter(s -> s.block),
+                    Codec.INT.optionalFieldOf("amount", 1).forGetter(s -> s.toBreak),
                     ResourceLocation.CODEC.fieldOf("identifier").forGetter(s -> s.id),
-                    Codec.INT.fieldOf("mined").forGetter(s -> s.mined)
-            ).apply(builder, MineTask::new))
+                    Codec.INT.fieldOf("broken").forGetter(s -> s.broken)
+            ).apply(builder, BreakTask::new))
     );
 
     public static final RegistryObject<Codec<BrewPotionTask>> BREW_TASK = TASK_TYPE_SERIALIZER.register("brewing", () ->

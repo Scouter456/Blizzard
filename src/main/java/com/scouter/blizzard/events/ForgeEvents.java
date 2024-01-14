@@ -124,7 +124,7 @@ public class ForgeEvents {
             for(Quests questsI : questsSet) {
                 List<Task> questList = questsI.getTasks();
                 for(Task quest : questList) {
-                    quest.playerObtainItem(stack, player, level);
+                    quest.playerBrewPotion(stack, player, level);
                 }
             }
             playerQuestManager.setDirty();

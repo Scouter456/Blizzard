@@ -4,9 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.RegistryFileCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ExtraCodecs;
@@ -14,9 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.Structure;
 
-import java.util.UUID;
 import java.util.function.Function;
 
 public interface Task {
@@ -36,7 +32,11 @@ public interface Task {
         return false;
     }
 
-    default boolean playerObtainItem(ItemStack stack, Player brewer, ServerLevel serverLevel) {
+    default boolean playerBrewPotion(ItemStack stack, Player brewer, ServerLevel serverLevel) {
+        return false;
+    }
+
+    default boolean playerObtainItem(ItemStack stack, Player player, ServerLevel serverLevel) {
         return false;
     }
 
