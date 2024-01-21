@@ -3,6 +3,7 @@ package com.scouter.blizzard.events;
 import com.mojang.logging.LogUtils;
 import com.scouter.blizzard.Blizzard;
 import com.scouter.blizzard.codec.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -24,6 +25,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -134,6 +136,19 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onRegisterReloadListeners(AddReloadListenerEvent event){
         event.addListener(new QuestManager());
+    }
+
+    @SubscribeEvent
+    public static void openQuests(PlayerInteractEvent.EntityInteract event) {
+        if(event.getLevel().isClientSide) return;
+        Entity entity = event.getTarget();
+        Player player = event.getEntity();
+        ServerLevel serverLevel = (ServerLevel) event.getLevel();
+        String id = entity.getEncodeId();
+        ResourceLocation resourceLocation = new ResourceLocation(id);
+        Map<ResourceLocation, Quests> questsMap = QuestManager.getRootQuestsForEntity(resourceLocation);
+        //TODO now assign quest or do something ^^
+
     }
 }
 

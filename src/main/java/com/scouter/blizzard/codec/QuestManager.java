@@ -14,6 +14,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.biome.Biome;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson STANDARD_GSON = new Gson();
     protected static Map<ResourceLocation, Quests> data = new HashMap<>();
+    protected static Map<ResourceLocation, Map<ResourceLocation, Quests>> rootQuests = new HashMap<>();
     private final String folderName;
     public QuestManager()
     {
@@ -46,9 +48,28 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
         return data;
     }
 
+    public static Map<ResourceLocation, Map<ResourceLocation, Quests>> getRootQuests() {
+        return rootQuests;
+    }
+
+    public static Map<ResourceLocation, Quests> getRootQuestsForEntity(ResourceLocation rl) {
+        if(rootQuests.isEmpty()) {
+            LOGGER.error("No root quests available");
+            return null;
+        }
+
+        if(!rootQuests.containsKey(rl)) {
+            LOGGER.error("No root quests available for entity {}" , rl);
+            return null;
+        }
+
+        return rootQuests.get(rl);
+    }
+
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> jsons, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         Map<ResourceLocation, Quests> questMap = new HashMap<>();
+        Map<ResourceLocation, Map<ResourceLocation, Quests>> rootQuestsMap = new HashMap<>();
 
         for (Map.Entry<ResourceLocation, JsonElement> entry : jsons.entrySet()) {
             ResourceLocation key = entry.getKey();
@@ -59,6 +80,14 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
                     .get()
                     .ifLeft(result -> {
                         Quests quest = result.getFirst();
+                        if(quest.isRootQuest()) {
+                            EntityType<?> entityType = quest.getAttachEntity();
+                            ResourceLocation loc = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
+                            Map<ResourceLocation, Quests> entityQuestMap = rootQuestsMap.computeIfAbsent(loc, k -> new HashMap<>());
+                            entityQuestMap.put(key, quest);
+                            rootQuestsMap.put(loc, entityQuestMap);
+                        }
+
                         questMap.put(key, quest);
                     })
                     .ifRight(partial -> LOGGER.error("Failed to parse data json for {} due to: {}", key, partial.message()));

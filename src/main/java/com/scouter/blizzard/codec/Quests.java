@@ -3,6 +3,9 @@ package com.scouter.blizzard.codec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -13,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +34,9 @@ public class Quests {
                     Codec.STRING.fieldOf("quest_name").forGetter(s -> s.questName),
                     Task.DIRECT_CODEC.listOf().fieldOf("tasks").forGetter(s -> s.taskList),
                     ResourceLocation.CODEC.optionalFieldOf("advancement_quest", new ResourceLocation("")).forGetter(s -> s.advancementQuest),
-                    Reward.QuestRewards.CODEC.listOf().optionalFieldOf("rewards", Collections.emptyList()).forGetter(s -> s.questRewards)
+                    Reward.QuestRewards.CODEC.listOf().optionalFieldOf("rewards", Collections.emptyList()).forGetter(s -> s.questRewards),
+                    Codec.BOOL.fieldOf("is_root_page").forGetter(s -> s.isRootQuest),
+                    BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("attach_entity").forGetter(s -> s.attachEntity)
             )
             .apply(inst, Quests::new)
     );
@@ -52,12 +58,15 @@ public class Quests {
     private ResourceLocation advancementQuest;
     private List<Reward.QuestRewards> questRewards;
     private QuestData questData;
-
-    public Quests(String questName, List<Task> taskList, ResourceLocation advancementQuest, List<Reward.QuestRewards> questRewards){
+    private boolean isRootQuest;
+    private EntityType<?> attachEntity;
+    public Quests(String questName, List<Task> taskList, ResourceLocation advancementQuest, List<Reward.QuestRewards> questRewards, boolean isRootQuest, EntityType<?> attachEntity){
         this.questName = questName;
         this.taskList = taskList;
         this.advancementQuest = advancementQuest;
         this.questRewards = questRewards;
+        this.isRootQuest = isRootQuest;
+        this.attachEntity = attachEntity;
     }
 
 
@@ -93,6 +102,13 @@ public class Quests {
         this.questData = questData;
     }
 
+    public boolean isRootQuest() {
+        return isRootQuest;
+    }
+
+    public EntityType<?> getAttachEntity() {
+        return attachEntity;
+    }
 
     //TODO improve messaging
     public void giveRewards(ServerLevel level, Player player) {
@@ -129,7 +145,7 @@ public class Quests {
 
 
     public Quests copyQuest() {
-        return new Quests(questName, taskList,advancementQuest, questRewards);
+        return new Quests(questName, taskList,advancementQuest, questRewards,isRootQuest, attachEntity);
     }
 
     public Quests startQuest(ServerLevel serverLevel, UUID giverID, UUID playerID) {
