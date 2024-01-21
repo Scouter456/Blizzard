@@ -146,6 +146,7 @@ public class ForgeEvents {
         ServerLevel serverLevel = (ServerLevel) event.getLevel();
         String id = entity.getEncodeId();
         ResourceLocation resourceLocation = new ResourceLocation(id);
+        //TODO first check if this entity didnt have quests assigned before so we can fetch the old quests only then can we assign new quests to the entity.
         Map<ResourceLocation, Quests> questsMap = QuestManager.getRootQuestsForEntity(resourceLocation);
         //TODO now assign quest or do something ^^
 
