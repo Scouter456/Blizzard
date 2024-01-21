@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -37,11 +38,18 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
         this(prefix("quests").getPath(), STANDARD_GSON);
     }
 
-
     public QuestManager(String folderName, Gson gson)
     {
         super(gson, folderName);
         this.folderName = folderName;
+    }
+
+    public static void setQuests(Map<ResourceLocation, Quests> data) {
+        QuestManager.data = data;
+    }
+
+    public static void setRootQuests(Map<ResourceLocation, Map<ResourceLocation, Quests>> rootQuests) {
+        QuestManager.rootQuests = rootQuests;
     }
 
     public static Map<ResourceLocation, Quests> getQuests() {

@@ -3,17 +3,22 @@ package com.scouter.blizzard.events;
 import com.mojang.logging.LogUtils;
 import com.scouter.blizzard.Blizzard;
 import com.scouter.blizzard.codec.*;
+import com.scouter.blizzard.message.QMessages;
+import com.scouter.blizzard.message.QuestsS2C;
+import com.scouter.blizzard.message.RootQuestsS2C;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.brewing.PlayerBrewedPotionEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -150,6 +155,28 @@ public class ForgeEvents {
         Map<ResourceLocation, Quests> questsMap = QuestManager.getRootQuestsForEntity(resourceLocation);
         //TODO now assign quest or do something ^^
 
+    }
+
+
+    @SubscribeEvent
+    public static void synchDataPack(OnDatapackSyncEvent event){
+        ServerPlayer player = event.getPlayer();
+        List<ServerPlayer> playerList = event.getPlayerList().getPlayers();
+        Map<ResourceLocation, Map<ResourceLocation, Quests>> rootQuests = QuestManager.getRootQuests();
+        Map<ResourceLocation, Quests> quests = QuestManager.getQuests();
+
+        if(player != null){
+            QMessages.sendToPlayer(new QuestsS2C(quests), player);
+            QMessages.sendToPlayer(new RootQuestsS2C(rootQuests), player);
+        }
+
+
+        if(playerList != null && !playerList.isEmpty()){
+            for(ServerPlayer player1 : playerList){
+                QMessages.sendToPlayer(new QuestsS2C(quests), player1);
+                QMessages.sendToPlayer(new RootQuestsS2C(rootQuests), player1);
+            }
+        }
     }
 }
 

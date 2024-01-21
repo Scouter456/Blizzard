@@ -1,6 +1,7 @@
 package com.scouter.blizzard.setup;
 
 import com.scouter.blizzard.Blizzard;
+import com.scouter.blizzard.message.QMessages;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -15,6 +16,7 @@ public class ModSetup {
         event.enqueueWork(() -> {
             //BBlockFamilies.registerFamilies();
         });
+        QMessages.register();
     }
 
     public static void setup() {
