@@ -166,15 +166,15 @@ public class ForgeEvents {
         Map<ResourceLocation, Quests> quests = QuestManager.getQuests();
 
         if(player != null){
-            QMessages.sendToPlayer(new QuestsS2C(quests), player);
-            QMessages.sendToPlayer(new RootQuestsS2C(rootQuests), player);
+            BMessages.sendToPlayer(new QuestsS2C(quests), player);
+            BMessages.sendToPlayer(new RootQuestsS2C(rootQuests), player);
         }
 
 
         if(playerList != null && !playerList.isEmpty()){
             for(ServerPlayer player1 : playerList){
-                QMessages.sendToPlayer(new QuestsS2C(quests), player1);
-                QMessages.sendToPlayer(new RootQuestsS2C(rootQuests), player1);
+                BMessages.sendToPlayer(new QuestsS2C(quests), player1);
+                BMessages.sendToPlayer(new RootQuestsS2C(rootQuests), player1);
             }
         }
     }

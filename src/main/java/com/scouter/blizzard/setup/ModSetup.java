@@ -16,7 +16,7 @@ public class ModSetup {
         event.enqueueWork(() -> {
             //BBlockFamilies.registerFamilies();
         });
-        QMessages.register();
+        //QMessages.register();
     }
 
     public static void setup() {

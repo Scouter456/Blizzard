@@ -1,6 +1,8 @@
 package com.scouter.blizzard.events;
 
 import com.scouter.blizzard.Blizzard;
+import com.scouter.blizzard.message.QuestsS2C;
+import com.scouter.blizzard.message.RootQuestsS2C;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -32,6 +34,16 @@ public class BMessages {
                 .encoder(BlizzardS2C::toBytes)
                 .consumerMainThread(BlizzardS2C::handle)
                 .add();
+
+        net.registerMessage(id(), QuestsS2C.class,
+                QuestsS2C::encode,
+                QuestsS2C::decode,
+                QuestsS2C::onPacketReceived);
+
+        net.registerMessage(id(), RootQuestsS2C.class,
+                RootQuestsS2C::encode,
+                RootQuestsS2C::decode,
+                RootQuestsS2C::onPacketReceived);
     }
     public static <MSG> void sendToServer(MSG message) {
         INSTANCE.sendToServer(message);
