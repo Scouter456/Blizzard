@@ -1,15 +1,10 @@
 package com.scouter.blizzard.codec;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class KillTask implements Task {
     public int killedEnties;
@@ -32,13 +27,11 @@ public class KillTask implements Task {
         this.killedEnties = killedEnties;
     }
 
-    @Override
-    public boolean playerMineBlock(BlockState state, Player player, ServerLevel serverLevel) {
-        return false;
-    }
 
     @Override
-    public boolean playerKillEntity(LivingEntity killed, Player attacker, ServerLevel serverLevel) {
+    public boolean test(TaskData data) {
+        ServerLevel serverLevel = data.getServerLevel();
+        LivingEntity killed = data.getKilledEntity();
         LivingEntity entityT = (LivingEntity) entity.create(serverLevel);
         if (killed.getType() == entityT.getType()) {
             killedEnties++;
@@ -47,8 +40,8 @@ public class KillTask implements Task {
     }
 
     @Override
-    public boolean playerObtainItem(ItemStack stack, Player brewer, ServerLevel serverLevel) {
-        return false;
+    public TaskType getTaskType() {
+        return TaskType.KILL;
     }
 
     @Override

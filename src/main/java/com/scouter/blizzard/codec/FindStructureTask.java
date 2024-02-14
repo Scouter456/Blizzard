@@ -5,11 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 public class FindStructureTask implements Task{
@@ -39,13 +35,20 @@ public class FindStructureTask implements Task{
     }
 
     @Override
-    public boolean playerFindStructure(Player player, ServerLevel serverLevel) {
+    public boolean test(TaskData data) {
+        Player player = data.getPlayer();
+        ServerLevel serverLevel = data.getServerLevel();
         boolean inStructure = StructureGatherer.isInStructure(serverLevel, player.blockPosition(), resourceKey);
         if(inStructure) {
             found++;
         }
 
         return false;
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.FIND_STRUCTURE;
     }
 
     @Override

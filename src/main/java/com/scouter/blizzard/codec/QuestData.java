@@ -3,9 +3,7 @@ package com.scouter.blizzard.codec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.resources.ResourceLocation;
 
-import java.util.Collections;
 import java.util.UUID;
 
 public class QuestData {

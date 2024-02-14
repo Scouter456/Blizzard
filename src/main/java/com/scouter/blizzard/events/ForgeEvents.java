@@ -3,7 +3,6 @@ package com.scouter.blizzard.events;
 import com.mojang.logging.LogUtils;
 import com.scouter.blizzard.Blizzard;
 import com.scouter.blizzard.codec.*;
-import com.scouter.blizzard.message.QMessages;
 import com.scouter.blizzard.message.QuestsS2C;
 import com.scouter.blizzard.message.RootQuestsS2C;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
@@ -32,7 +30,6 @@ import org.slf4j.Logger;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = Blizzard.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
@@ -56,10 +53,11 @@ public class ForgeEvents {
             ServerLevel serverLevel = (ServerLevel) serverPlayer.level();
             PlayerQuestManager playerQuestManager = PlayerQuestManager.get(serverLevel, serverPlayer.getUUID());
             Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(serverPlayer.getUUID());
-            for(Quests questsI : questsSet) {
-                List<Task> questList = questsI.getTasks();
-                for(Task quest : questList) {
-                    quest.playerFindStructure(serverPlayer, serverLevel);
+            TaskData data = new TaskData(serverLevel, serverPlayer);
+            for(Quests quests : questsSet) {
+                List<Task> taskList = quests.getTaskForType(TaskType.FIND_STRUCTURE);
+                for(Task task : taskList) {
+                    task.test(data);
                 }
             }
             playerQuestManager.setDirty();
@@ -68,16 +66,18 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
-    public static void killQuest(LivingDeathEvent event) {
+    public static void killTask(LivingDeathEvent event) {
         Entity source  = event.getSource().getEntity();
         if(source != null && !source.level().isClientSide() && source instanceof ServerPlayer player) {
             ServerLevel level = (ServerLevel) player.level();
             PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level, player.getUUID());
             Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
-            for(Quests questsI : questsSet) {
-                List<Task> questList = questsI.getTasks();
-                for(Task quest : questList) {
-                    quest.playerKillEntity(event.getEntity(), player, level);
+            TaskData data = new TaskData(level, player);
+            data.setKilledEntity(event.getEntity());
+            for(Quests quests : questsSet) {
+                List<Task> taskList = quests.getTaskForType(TaskType.KILL);
+                for(Task task : taskList) {
+                    task.test(data);
                 }
             }
             playerQuestManager.setDirty();
@@ -85,17 +85,19 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
-    public static void killQuest(BlockEvent.BreakEvent event) {
+    public static void breakTask(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();
         if(player != null && !player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
             BlockState state = event.getState();
             ServerLevel level = (ServerLevel) player.level();
             PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level, serverPlayer.getUUID());
             Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
-            for(Quests questsI : questsSet) {
-                List<Task> questList = questsI.getTasks();
-                for(Task quest : questList) {
-                    quest.playerMineBlock(state, player, level);
+            TaskData data = new TaskData(level, serverPlayer);
+            data.setMinedBlock(state);
+            for(Quests quests : questsSet) {
+                List<Task> taskList = quests.getTaskForType(TaskType.BREAK);
+                for(Task task : taskList) {
+                    task.test(data);
                 }
             }
             playerQuestManager.setDirty();
@@ -110,10 +112,12 @@ public class ForgeEvents {
             ServerLevel level = (ServerLevel) player.level();
             PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level, serverPlayer.getUUID());
             Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
-            for(Quests questsI : questsSet) {
-                List<Task> questList = questsI.getTasks();
-                for(Task quest : questList) {
-                    quest.playerObtainItem(stack, player, level);
+            TaskData data = new TaskData(level, serverPlayer);
+            data.setObtainedItem(stack);
+            for(Quests quests : questsSet) {
+                List<Task> taskList = quests.getTaskForType(TaskType.COLLECT);
+                for(Task task : taskList) {
+                    task.test(data);
                 }
             }
             playerQuestManager.setDirty();
@@ -128,10 +132,12 @@ public class ForgeEvents {
             ServerLevel level = (ServerLevel) player.level();
             PlayerQuestManager playerQuestManager = PlayerQuestManager.get(level, serverPlayer.getUUID());
             Set<Quests> questsSet = playerQuestManager.getQuestsForUUID(player.getUUID());
-            for(Quests questsI : questsSet) {
-                List<Task> questList = questsI.getTasks();
-                for(Task quest : questList) {
-                    quest.playerBrewPotion(stack, player, level);
+            TaskData data = new TaskData(level, serverPlayer);
+            data.setObtainedItem(stack);
+            for(Quests quests : questsSet) {
+                List<Task> taskList = quests.getTaskForType(TaskType.BREW);
+                for(Task task : taskList) {
+                    task.test(data);
                 }
             }
             playerQuestManager.setDirty();

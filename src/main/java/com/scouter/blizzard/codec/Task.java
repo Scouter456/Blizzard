@@ -6,12 +6,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Function;
 
@@ -23,26 +18,8 @@ public interface Task {
     Codec<Holder<Task>> REFERENCE_CODEC = RegistryFileCodec.create(TaskRegistries.Keys.TASK_TYPE, DIRECT_CODEC);
 
     Codec<HolderSet<Task>> LIST_CODEC = RegistryCodecs.homogeneousList(TaskRegistries.Keys.TASK_TYPE, DIRECT_CODEC);
-
-    default boolean playerMineBlock(BlockState state, Player player, ServerLevel serverLevel) {
-        return false;
-    }
-
-    default boolean playerKillEntity(LivingEntity killed, Player attacker, ServerLevel serverLevel) {
-        return false;
-    }
-
-    default boolean playerBrewPotion(ItemStack stack, Player brewer, ServerLevel serverLevel) {
-        return false;
-    }
-
-    default boolean playerObtainItem(ItemStack stack, Player player, ServerLevel serverLevel) {
-        return false;
-    }
-
-    default boolean playerFindStructure(Player player, ServerLevel serverLevel) {
-        return false;
-    }
+    boolean test(TaskData data);
+    TaskType getTaskType();
 
     ResourceLocation identifier();
     Codec<? extends Task> codec();

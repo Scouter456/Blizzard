@@ -1,7 +1,8 @@
 package com.scouter.blizzard.setup;
 
 import com.scouter.blizzard.Blizzard;
-import com.scouter.blizzard.message.QMessages;
+import com.scouter.blizzard.entities.BEntities;
+import com.scouter.blizzard.entities.FishEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -26,7 +27,7 @@ public class ModSetup {
 
     @SubscribeEvent
     public static void onAttributeCreate(EntityAttributeCreationEvent event) {
-
+        event.put(BEntities.MOTOR_FISH.get(), FishEntity.createAttributes().build());
     }
 
 

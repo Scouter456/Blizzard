@@ -2,10 +2,6 @@ package com.scouter.blizzard.codec;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -27,8 +23,10 @@ public class BreakTask implements Task {
         this.broken = mined;
     }
 
+
     @Override
-    public boolean playerMineBlock(BlockState state, Player player, ServerLevel serverLevel) {
+    public boolean test(TaskData data) {
+        BlockState state = data.getMinedBlock();
         if(state.is(block)) {
             broken++;
         }
@@ -36,13 +34,8 @@ public class BreakTask implements Task {
     }
 
     @Override
-    public boolean playerKillEntity(LivingEntity killed, Player attacker, ServerLevel serverLevel) {
-        return false;
-    }
-
-    @Override
-    public boolean playerObtainItem(ItemStack stack, Player brewer, ServerLevel serverLevel) {
-        return false;
+    public TaskType getTaskType() {
+        return TaskType.BREAK;
     }
 
     @Override

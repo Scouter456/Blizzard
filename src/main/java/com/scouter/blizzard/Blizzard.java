@@ -2,8 +2,8 @@ package com.scouter.blizzard;
 
 import com.mojang.logging.LogUtils;
 import com.scouter.blizzard.codec.QuestCommand;
-import com.scouter.blizzard.codec.TaskRegistries;
 import com.scouter.blizzard.codec.Task;
+import com.scouter.blizzard.codec.TaskRegistries;
 import com.scouter.blizzard.events.ClientEvents;
 import com.scouter.blizzard.events.ForgeEvents;
 import com.scouter.blizzard.setup.ClientSetup;

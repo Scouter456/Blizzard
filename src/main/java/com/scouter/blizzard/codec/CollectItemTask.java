@@ -2,12 +2,8 @@ package com.scouter.blizzard.codec;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class CollectItemTask implements Task{
 
@@ -28,23 +24,20 @@ public class CollectItemTask implements Task{
         this.id = id;
         this.collected = brewed;
     }
-    @Override
-    public boolean playerMineBlock(BlockState state, Player player, ServerLevel serverLevel) {
-        return false;
-    }
 
     @Override
-    public boolean playerKillEntity(LivingEntity killed, Player attacker, ServerLevel serverLevel) {
-        return false;
-    }
-
-    @Override
-    public boolean playerObtainItem(ItemStack stack, Player brewer, ServerLevel serverLevel) {
+    public boolean test(TaskData data) {
+        ItemStack stack = data.getObtainedItem();
         if(stack.is(item)) {
             collected++;
         }
 
         return false;
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.COLLECT;
     }
 
     @Override
