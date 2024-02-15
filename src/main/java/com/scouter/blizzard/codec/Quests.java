@@ -1,6 +1,10 @@
 package com.scouter.blizzard.codec;
 
+import com.google.gson.JsonElement;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,15 +17,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
  * Represents a quest with tasks, rewards, and associated data.
  */
 public class Quests {
-
+    private static final Logger LOGGER = LogUtils.getLogger();
     /**
      * Codec for serialization and deserialization of Quests.
      */
@@ -55,6 +61,7 @@ public class Quests {
     private List<Task> taskList;
     private Map<TaskType, List<Task>> taskTypeMap;
     private ResourceLocation advancementQuest;
+    private ResourceLocation resourceLocation;
     private List<Reward.QuestRewards> questRewards;
     private QuestData questData;
     private boolean isRootQuest;
@@ -277,6 +284,12 @@ public class Quests {
     public UUID getQuestID() {
         return questData != null ? questData.getQuestID() : null;
     }
+    public void setQuestResourceLocation(ResourceLocation resourceLocation){
+        this.resourceLocation = resourceLocation;
+    }
+    public ResourceLocation getQuestResourceLocation() {
+        return resourceLocation;
+    }
 
     private Map<TaskType, List<Task>> computeTasks() {
         Map<TaskType, List<Task>> taskTypeListMap = new HashMap<>();
@@ -285,5 +298,16 @@ public class Quests {
         }
         this.taskTypeMap = taskTypeListMap;
         return taskTypeListMap;
+    }
+
+    public JsonElement serializeQuest() {
+        AtomicReference<JsonElement> jsonElement = new AtomicReference<>();
+        DataResult<JsonElement> questResult = Quests.CODEC.encodeStart(JsonOps.INSTANCE, this);
+        questResult.get()
+                .ifLeft(result -> {
+                    jsonElement.set(result);
+                })
+                .ifRight(partial -> LOGGER.error("Failed to serialize quest with id: {}", this.resourceLocation));
+        return jsonElement.get();
     }
 }

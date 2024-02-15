@@ -15,6 +15,11 @@ public class TaskBuilder {
         private EntityType<?> killer;
         private int amount = 1;
         private ResourceLocation identifier;
+        public static KillTaskBuilder Builder(ResourceLocation id){
+            KillTaskBuilder killTaskBuilder = new KillTaskBuilder();
+            killTaskBuilder.withIdentifier(id);
+            return killTaskBuilder;
+        }
 
         public KillTaskBuilder withEntityToKill(EntityType<?> entityToKill) {
             this.entityToKill = entityToKill;
@@ -45,6 +50,11 @@ public class TaskBuilder {
         private Block toBreak;
         private int amount = 1;
         private ResourceLocation identifier;
+        public static BreakTaskBuilder Builder(ResourceLocation id){
+            BreakTaskBuilder breakTaskBuilder = new BreakTaskBuilder();
+            breakTaskBuilder.withIdentifier(id);
+            return breakTaskBuilder;
+        }
 
         public BreakTaskBuilder withToBreak(Block toBreak) {
             this.toBreak = toBreak;
@@ -96,6 +106,12 @@ public class TaskBuilder {
         private int amount = 1;
         private ResourceLocation identifier;
 
+        public static CollectItemTaskBuilder Builder(ResourceLocation id){
+            CollectItemTaskBuilder collectItemTaskBuilder = new CollectItemTaskBuilder();
+            collectItemTaskBuilder.withIdentifier(id);
+            return collectItemTaskBuilder;
+        }
+
         public CollectItemTaskBuilder withToCollect(Item toCollect) {
             this.toCollect = toCollect;
             return this;
@@ -120,6 +136,12 @@ public class TaskBuilder {
         private ResourceLocation toFind;
         private int amount = 1;
         private ResourceLocation identifier;
+
+        public static FindStructureTaskBuilder Builder(ResourceLocation id){
+            FindStructureTaskBuilder findStructureTaskBuilder = new FindStructureTaskBuilder();
+            findStructureTaskBuilder.withIdentifier(id);
+            return findStructureTaskBuilder;
+        }
 
         public FindStructureTaskBuilder withToFind(ResourceLocation toFind) {
             this.toFind = toFind;

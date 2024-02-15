@@ -1,0 +1,25 @@
+{
+  "attach_entity": "minecraft:allay",
+  "is_root_quest": true,
+  "quest_name": "test",
+  "tasks": [
+    {
+      "type": "blizzard:break",
+      "amount": 2,
+      "identifier": "blizzard:test_task",
+      "to_break": "minecraft:sand"
+    },
+    {
+      "type": "blizzard:break",
+      "amount": 2,
+      "identifier": "blizzard:test_task_grass",
+      "to_break": "minecraft:grass"
+    },
+    {
+      "type": "blizzard:collect",
+      "amount": 2,
+      "identifier": "blizzard:test_task_item",
+      "to_collect": "minecraft:anvil"
+    }
+  ]
+}

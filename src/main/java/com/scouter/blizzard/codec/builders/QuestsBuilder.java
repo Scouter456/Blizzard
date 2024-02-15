@@ -13,10 +13,18 @@ public class QuestsBuilder {
     private String questName;
     private final List<Task> taskList = new ArrayList<>();
     private ResourceLocation advancementQuest = new ResourceLocation("");
+    private ResourceLocation resourceLocation = new ResourceLocation("");
     private final List<Reward.QuestRewards> questRewards = new ArrayList<>();
     private boolean isRootQuest = false;
     private EntityType<?> attachEntity;
 
+    public static QuestsBuilder Builder(){
+        return new QuestsBuilder();
+    }
+    public QuestsBuilder withResourceLocation(ResourceLocation resourceLocation) {
+        this.resourceLocation = resourceLocation;
+        return this;
+    }
     public QuestsBuilder withQuestName(String questName) {
         this.questName = questName;
         return this;
@@ -48,7 +56,9 @@ public class QuestsBuilder {
     }
 
     public Quests build() {
-        return new Quests(questName, taskList, advancementQuest, questRewards, isRootQuest, attachEntity);
+        Quests quests = new Quests(questName, taskList, advancementQuest, questRewards, isRootQuest, attachEntity);
+        quests.setQuestResourceLocation(resourceLocation);
+        return quests;
     }
 }
 
