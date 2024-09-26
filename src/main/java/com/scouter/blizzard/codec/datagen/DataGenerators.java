@@ -30,9 +30,11 @@ public class DataGenerators {
         ExistingFileHelper helper = evt.getExistingFileHelper();
         Set<BlockStateGenerator> set = Sets.newHashSet();
         Consumer<BlockStateGenerator> consumer = set::add;
+
         CompletableFuture<HolderLookup.Provider> provider = evt.getLookupProvider();
         CompletableFuture<HolderLookup.Provider> lookupProvider = evt.getLookupProvider();
         generator.addProvider(true,new QuestBuilderProvider(packOutput));
+        generator.addProvider(true, new SoundsGenerator(packOutput, helper));
     }
 
 }

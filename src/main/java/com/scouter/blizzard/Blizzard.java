@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.scouter.blizzard.codec.QuestCommand;
 import com.scouter.blizzard.codec.Task;
 import com.scouter.blizzard.codec.TaskRegistries;
+import com.scouter.blizzard.events.BlizzardCommand;
 import com.scouter.blizzard.events.ClientEvents;
 import com.scouter.blizzard.events.ForgeEvents;
 import com.scouter.blizzard.setup.ClientSetup;
@@ -56,6 +57,7 @@ public class Blizzard
 
     public void commands(RegisterCommandsEvent e) {
         QuestCommand.register(e.getDispatcher());
+        BlizzardCommand.register(e.getDispatcher());
     }
 
     public static ResourceLocation prefix(String name) {

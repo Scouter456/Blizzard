@@ -35,6 +35,11 @@ public class BMessages {
                 .consumerMainThread(BlizzardS2C::handle)
                 .add();
 
+        net.registerMessage(id(), BlizzardMapS2C.class,
+                BlizzardMapS2C::encode,
+                BlizzardMapS2C::decode,
+                BlizzardMapS2C::onPacketReceived);
+
         net.registerMessage(id(), QuestsS2C.class,
                 QuestsS2C::encode,
                 QuestsS2C::decode,

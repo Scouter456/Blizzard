@@ -1,0 +1,36 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.swim": {
+			"animation_length": 1.64,
+			"bones": {
+				"body": {
+					"rotation": {
+						"vector": [0, "math.cos(query.anim_time * 90 * 3) * 3", 0]
+					}
+				},
+				"r_fin": {
+					"rotation": {
+						"vector": [0, 0, "-math.cos(query.anim_time * 90 * 3) * 10"]
+					}
+				},
+				"l_fin": {
+					"rotation": {
+						"vector": [0, 0, "math.cos(query.anim_time * 90 * 3) * 10"]
+					}
+				},
+				"gear": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.64": {
+							"vector": [0, 0, 360]
+						}
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

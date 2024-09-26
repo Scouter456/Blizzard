@@ -1,0 +1,69 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.lazuli_scale",
+				"texture_width": 32,
+				"texture_height": 32,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 1.5, -0.5]
+				},
+				{
+					"name": "body",
+					"parent": "root",
+					"pivot": [0, 1.5, -1],
+					"cubes": [
+						{"origin": [-1, 0, -5], "size": [2, 3, 8], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "bottom_fins",
+					"parent": "body",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [0, -3, -3], "size": [0, 3, 7], "uv": [0, 8]}
+					]
+				},
+				{
+					"name": "top_fins",
+					"parent": "body",
+					"pivot": [0, 3, 0],
+					"cubes": [
+						{"origin": [0, 3, -3], "size": [0, 4, 7], "uv": [0, 4]}
+					]
+				},
+				{
+					"name": "l_fin",
+					"parent": "body",
+					"pivot": [1, 0, -3],
+					"cubes": [
+						{"origin": [1, 0, -3], "size": [4, 0, 3], "uv": [9, 1]}
+					]
+				},
+				{
+					"name": "r_fin",
+					"parent": "body",
+					"pivot": [-1, 0, -3],
+					"cubes": [
+						{"origin": [-5, 0, -3], "size": [4, 0, 3], "uv": [9, 1], "mirror": true}
+					]
+				},
+				{
+					"name": "tail",
+					"parent": "body",
+					"pivot": [0, 2, 3],
+					"cubes": [
+						{"origin": [0, -2, 3], "size": [0, 8, 5], "uv": [0, 13]}
+					]
+				}
+			]
+		}
+	]
+}

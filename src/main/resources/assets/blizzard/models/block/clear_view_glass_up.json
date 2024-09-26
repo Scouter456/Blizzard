@@ -1,0 +1,14 @@
+{
+  "parent": "block/cube",
+  "render_type": "cutout_mipped",
+  "textures": {
+    "particle": "blizzard:block/clear_view_glass_all",
+    "down": "blizzard:block/clear_view_glass_blank",
+    "up": "blizzard:block/clear_view_glass_blank",
+    "north": "blizzard:block/clear_view_glass_up",
+    "east": "blizzard:block/clear_view_glass_up",
+    "south": "blizzard:block/clear_view_glass_up",
+    "west": "blizzard:block/clear_view_glass_up"
+  }
+}
+

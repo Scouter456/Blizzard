@@ -1,0 +1,62 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.motorfish",
+				"texture_width": 32,
+				"texture_height": 32,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 1, 0]
+				},
+				{
+					"name": "body",
+					"parent": "root",
+					"pivot": [0, 2, -1],
+					"cubes": [
+						{"origin": [-1, 0, -3], "size": [2, 3, 5], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "r_fin",
+					"parent": "body",
+					"pivot": [-1, 0, 0],
+					"cubes": [
+						{"origin": [-1, -3, -2], "size": [0, 3, 6], "pivot": [-1, 0, -1], "rotation": [0, 0, 40], "uv": [0, 5], "mirror": true}
+					]
+				},
+				{
+					"name": "l_fin",
+					"parent": "body",
+					"pivot": [1, 0, 0],
+					"cubes": [
+						{"origin": [1, -3, -2], "size": [0, 3, 6], "pivot": [1, 0, -1], "rotation": [0, 0, -40], "uv": [0, 5]}
+					]
+				},
+				{
+					"name": "tail",
+					"parent": "root",
+					"pivot": [0, 1.5, 2],
+					"cubes": [
+						{"origin": [0, 1, 2], "size": [0, 1, 3], "pivot": [0, 1.5, 2], "rotation": [0, 0, -40], "uv": [9, 0]},
+						{"origin": [-0.5, 1.5, 2], "size": [1, 0, 3], "pivot": [0, 1.5, 2], "rotation": [0, 0, -40], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "gear",
+					"parent": "tail",
+					"pivot": [0, 1.5, 5],
+					"cubes": [
+						{"origin": [-3, -1.5, 5], "size": [6, 6, 0], "uv": [12, 8]}
+					]
+				}
+			]
+		}
+	]
+}

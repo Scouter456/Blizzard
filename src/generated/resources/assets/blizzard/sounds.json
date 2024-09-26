@@ -1,0 +1,14 @@
+{
+  "weather.blizzard": {
+    "sounds": [
+      "blizzard:blizzard_1"
+    ],
+    "subtitle": "weather.blizzard"
+  },
+  "weather.blizzard.above": {
+    "sounds": [
+      "blizzard:blizzard_1"
+    ],
+    "subtitle": "weather.blizzard.above"
+  }
+}

@@ -1,0 +1,62 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.scarlet_minnow",
+				"texture_width": 32,
+				"texture_height": 32,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 2, 0]
+				},
+				{
+					"name": "body",
+					"parent": "root",
+					"pivot": [0, 2, -1],
+					"cubes": [
+						{"origin": [-1, 0, -3], "size": [2, 4, 4], "uv": [10, 7]},
+						{"origin": [0, -2, -2], "size": [0, 8, 4], "uv": [0, 7]}
+					]
+				},
+				{
+					"name": "r_fin",
+					"parent": "body",
+					"pivot": [-1, 1, -2],
+					"cubes": [
+						{"origin": [-3, 0, -2], "size": [2, 2, 0], "pivot": [-1, 1, -2], "rotation": [0, 50, 0], "uv": [4, 4]}
+					]
+				},
+				{
+					"name": "l_fin",
+					"parent": "body",
+					"pivot": [1, 1, -2],
+					"cubes": [
+						{"origin": [1, 0, -2], "size": [2, 2, 0], "pivot": [1, 1, -2], "rotation": [0, -50, 0], "uv": [4, 4]}
+					]
+				},
+				{
+					"name": "head",
+					"parent": "body",
+					"pivot": [0, 2, -3],
+					"cubes": [
+						{"origin": [-1.5, 1, -4.5], "size": [3, 2, 2], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "tail",
+					"parent": "body",
+					"pivot": [0, 2, 1],
+					"cubes": [
+						{"origin": [0, 0, 1], "size": [0, 4, 7], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

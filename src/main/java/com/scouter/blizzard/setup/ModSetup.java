@@ -28,6 +28,12 @@ public class ModSetup {
     @SubscribeEvent
     public static void onAttributeCreate(EntityAttributeCreationEvent event) {
         event.put(BEntities.MOTOR_FISH.get(), FishEntity.createAttributes().build());
+        event.put(BEntities.SCARLET_MINNOW.get(), FishEntity.createAttributes().build());
+        event.put(BEntities.LAZULI_SCALE.get(), FishEntity.createAttributes().build());
+        event.put(BEntities.EMERALDINE_MOLA.get(), FishEntity.createAttributes().build());
+        event.put(BEntities.AUREOFIN.get(), FishEntity.createAttributes().build());
+        event.put(BEntities.GLITTERING_FISH.get(), FishEntity.createAttributes().build());
+
     }
 
 
